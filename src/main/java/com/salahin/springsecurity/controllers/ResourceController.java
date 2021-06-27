@@ -6,14 +6,14 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 public class ResourceController {
 	
-	@RequestMapping({"/hellouser"})
-	public String helloUser(){
-		return "Hello User";
+	@RequestMapping({"/admin-user"})
+	public String adminUser(){
+		return "Hello Admin";
 	}
 	
-	@RequestMapping({"/helloadmin"})
-	public String helloAdmin(){
-		return "Hello Admin";
+	@RequestMapping({"/normal-user"})
+	public String normalUser(){
+		return "Hello User";
 	}
 	
 }
