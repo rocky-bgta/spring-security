@@ -7,8 +7,10 @@ import org.springframework.security.config.annotation.authentication.builders.Au
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -16,8 +18,16 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	private final CustomUserDetailsService customUserDetailsService;
 	
-	public SecurityConfiguration(CustomUserDetailsService customUserDetailsService) {
+	private final CustomJwtAuthenticationFilter customJwtAuthenticationFilter;
+	
+	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	
+	public SecurityConfiguration(
+		CustomUserDetailsService customUserDetailsService, CustomJwtAuthenticationFilter customJwtAuthenticationFilter,
+		JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint) {
 		this.customUserDetailsService = customUserDetailsService;
+		this.customJwtAuthenticationFilter = customJwtAuthenticationFilter;
+		this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
 	}
 	
 	public PasswordEncoder passwordEncoder(){
@@ -37,7 +47,13 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 			.antMatchers("/hellouser").hasAnyRole("USER", "ADMIN")
 			.antMatchers("/authenticate").permitAll().anyRequest().authenticated()
 			.and()
-			.httpBasic();
+			.exceptionHandling()
+			.authenticationEntryPoint(jwtAuthenticationEntryPoint)
+			.and()
+			.sessionManagement()
+			.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+			.and()
+			.addFilterBefore(customJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 	
 	@Bean
