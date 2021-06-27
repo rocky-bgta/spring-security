@@ -1,6 +1,8 @@
 package com.salahin.springsecurity.configuration;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.User;
@@ -24,17 +26,18 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
 	@Override
 	protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain chain)
 			throws ServletException, IOException {
-
-			// JWT Token is in the form "Bearer token". Remove Bearer word and
-			// get  only the Token
+		
+		// JWT Token is in the form "Bearer token". Remove Bearer word and
+		// get  only the Token
+		try {
 			String jwtToken = extractJwtFromRequest(request);
-
+			
 			if (StringUtils.hasText(jwtToken) && jwtTokenUtil.validateToken(jwtToken)) {
 				UserDetails userDetails = new User(jwtTokenUtil.getUsernameFromToken(jwtToken), "",
-						jwtTokenUtil.getRolesFromToken(jwtToken));
-
+					jwtTokenUtil.getRolesFromToken(jwtToken));
+				
 				UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken = new UsernamePasswordAuthenticationToken(
-						userDetails, null, userDetails.getAuthorities());
+					userDetails, null, userDetails.getAuthorities());
 				// After setting the Authentication in the context, we specify
 				// that the current user is authenticated. So it passes the
 				// Spring Security Configurations successfully.
@@ -42,6 +45,11 @@ public class CustomJwtAuthenticationFilter extends OncePerRequestFilter {
 			} else {
 				System.out.println("Cannot set the Security Context");
 			}
+		} catch (ExpiredJwtException ex) {
+			request.setAttribute("exception", ex);
+		} catch (BadCredentialsException ex) {
+			request.setAttribute("exception", ex);
+		}
 		chain.doFilter(request, response);
 	}
 
