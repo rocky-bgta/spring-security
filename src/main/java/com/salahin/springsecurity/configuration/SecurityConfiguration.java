@@ -17,8 +17,10 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	
 	private final CustomUserDetailsService customUserDetailsService;
+	
 	private final CustomJwtAuthenticationFilter customJwtAuthenticationFilter;
-	private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+	
+	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 	
 	public SecurityConfiguration(
 		CustomUserDetailsService customUserDetailsService, CustomJwtAuthenticationFilter customJwtAuthenticationFilter,
@@ -42,9 +44,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable()
 			.authorizeRequests()
-			.antMatchers("/admin-user").hasRole("ADMIN_ROLE")
-			.antMatchers("/normal-user").hasAnyRole("ADMIN_ROLE","USER_ROLE")
-			.antMatchers("/authenticate","/register").permitAll().anyRequest().authenticated()
+			.antMatchers("/helloadmin").hasRole("ADMIN")
+			.antMatchers("/hellouser").hasAnyRole("USER", "ADMIN")
+			.antMatchers("/authenticate").permitAll().anyRequest().authenticated()
 			.and()
 			.exceptionHandling()
 			.authenticationEntryPoint(jwtAuthenticationEntryPoint)
