@@ -12,14 +12,13 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class CustomUserDetailsService implements UserDetailsService {
 	
 	private final UserRepository userRepository;
 	private List<SimpleGrantedAuthority> roleList;
-	private List<String> roleNames;
+	//private List<String> roleNames;
 	
 	public CustomUserDetailsService(UserRepository userRepository) {
 		this.userRepository = userRepository;
@@ -29,7 +28,7 @@ public class CustomUserDetailsService implements UserDetailsService {
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 		UserModel userModel;
 		userModel = userRepository.findByUsername(username);
-		roleNames = userModel.getRoleList().stream().map(roleEntity -> roleEntity.getRoleName()).collect(Collectors.toList());
+		//roleNames = userModel.getRoleList().stream().map(roleEntity -> roleEntity.getRoleName()).collect(Collectors.toList());
 		roleList = new ArrayList<>();
 		if (userModel != null) {
 			for (RoleEntity roleEntity : userModel.getRoleList()) {
@@ -40,10 +39,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 		throw new UsernameNotFoundException("User not found with the name" + username);
 	}
 	
-	public String[] getRoleNames() {
-		if (roleNames != null)
-			return (String[]) roleNames.toArray();
-		else return new String[]{""};
-	}
-	
+//	public String[] getRoleNames() {
+//		if (roleNames != null)
+//			return (String[]) roleNames.toArray();
+//		else return new String[]{""};
+//	}
+
 }

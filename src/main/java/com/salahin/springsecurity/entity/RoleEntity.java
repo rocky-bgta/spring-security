@@ -4,6 +4,7 @@ import lombok.Data;
 import org.hibernate.annotations.GenericGenerator;
 
 import javax.persistence.*;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -13,8 +14,8 @@ public class RoleEntity {
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@Column(name = "id",unique = true)
-	private String id;
+	private UUID id;
 	
-	@Column(name = "role_name",unique = true)
+	@Column(name = "role_name")
 	private String roleName;
 }

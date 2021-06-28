@@ -28,6 +28,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 		this.jwtAuthenticationEntryPoint = jwtAuthenticationEntryPoint;
 	}
 	
+	@Bean
 	public PasswordEncoder passwordEncoder(){
 		return new BCryptPasswordEncoder();
 	}
@@ -41,9 +42,9 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 	protected void configure(HttpSecurity http) throws Exception {
 		http.csrf().disable()
 			.authorizeRequests()
-			.antMatchers("/admin-user").hasAnyRole(customUserDetailsService.getRoleNames())
-			.antMatchers("/normal-user").hasAnyRole(customUserDetailsService.getRoleNames())
-			.antMatchers("/authenticate").permitAll().anyRequest().authenticated()
+			.antMatchers("/admin-user").hasRole("ADMIN_ROLE")
+			.antMatchers("/normal-user").hasAnyRole("ADMIN_ROLE","USER_ROLE")
+			.antMatchers("/authenticate","/register").permitAll().anyRequest().authenticated()
 			.and()
 			.exceptionHandling()
 			.authenticationEntryPoint(jwtAuthenticationEntryPoint)

@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Data
 @Entity
@@ -17,7 +18,7 @@ public class UserEntity {
 	@GeneratedValue(generator = "uuid")
 	@GenericGenerator(name = "uuid", strategy = "uuid2")
 	@Column(name = "id",unique = true)
-	private String id;
+	private UUID id;
 	
 	@Column(name="username", nullable = false)
 	private String username;
