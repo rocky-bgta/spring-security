@@ -1,7 +1,7 @@
 package com.salahin.springsecurity.configuration;
 
 import com.salahin.springsecurity.entity.RoleEntity;
-import com.salahin.springsecurity.model.UserModel;
+import com.salahin.springsecurity.entity.UserEntity;
 import com.salahin.springsecurity.repository.UserRepository;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
@@ -17,7 +17,6 @@ import java.util.List;
 public class CustomUserDetailsService implements UserDetailsService {
 	
 	private final UserRepository userRepository;
-	private List<SimpleGrantedAuthority> roleList;
 	//private List<String> roleNames;
 	
 	public CustomUserDetailsService(UserRepository userRepository) {
@@ -26,10 +25,10 @@ public class CustomUserDetailsService implements UserDetailsService {
 	
 	@Override
 	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
-		UserModel userModel;
+		UserEntity userModel;
 		userModel = userRepository.findByUsername(username);
 		//roleNames = userModel.getRoleList().stream().map(roleEntity -> roleEntity.getRoleName()).collect(Collectors.toList());
-		roleList = new ArrayList<>();
+		List<SimpleGrantedAuthority> roleList = new ArrayList<>();
 		if (userModel != null) {
 			for (RoleEntity roleEntity : userModel.getRoleList()) {
 				roleList.add(new SimpleGrantedAuthority(roleEntity.getRoleName()));
