@@ -27,6 +27,12 @@ public class UserEntity {
 	@JsonIgnore
 	private String password;
 	
+	@Column(name="email_verified")
+	private boolean emailVerified;
+	
+	@Column(name="status")
+	private boolean status;
+	
 	@OneToMany(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
 	@JoinColumn(name = "role_fk", referencedColumnName = "id")
 	List<RoleEntity> roleList = new ArrayList<>();
