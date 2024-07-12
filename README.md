@@ -11,3 +11,8 @@ Simple json payload to create user:
 
 ]
 }
+
+# curl for refresh token:
+curl --location 'http://localhost:8080/refreshtoken' \
+--header 'isRefreshToken: true' \
+--header 'Authorization: ••••••' \
